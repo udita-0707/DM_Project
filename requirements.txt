@@ -1,0 +1,10 @@
+pandas
+requests
+scikit-learn
+matplotlib
+seaborn
+plotly
+wordcloud
+flask
+gunicorn
+
