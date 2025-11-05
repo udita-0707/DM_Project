@@ -1,6 +1,6 @@
 # Research Methodology and Innovation in Hypotheses
 
-This document details our technical approach and innovative hypotheses, addressing **Research Methodology** (20 Marks) and **Innovation in Hypotheses** (20 Marks).
+This document details our technical approach and innovative hypotheses, addressing **Research Methodology** and **Innovation in Hypotheses**.
 
 ## 1. Research Methodology
 
