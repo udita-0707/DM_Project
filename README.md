@@ -43,8 +43,8 @@ We are analyzing large-scale scientific publication data from **arXiv** and **Se
 
 ```bash
 # Clone and install
-git clone [YOUR_GITHUB_REPO_URL]
-cd DM_project_v1
+git clone https://github.com/Kkt04/DM_Project.git
+cd DM_Project
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
