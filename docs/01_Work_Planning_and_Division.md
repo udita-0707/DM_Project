@@ -1,6 +1,6 @@
 # Work Planning and Division
 
-This document outlines our structured plan as a three-person team, defining clear role assignments, responsibilities, and knowledge exchange strategies to address the **Work Planning and Division** evaluation criterion (15 Marks).
+This document outlines our structured plan as a three-person team, defining clear role assignments, responsibilities, and knowledge exchange strategies to address the **Work Planning and Division** evaluation criterion.
 
 ## 1. Team Roles and Responsibilities
 
@@ -16,10 +16,10 @@ We have divided the project into three core roles to maximize expertise and ensu
 
 We will implement a knowledge exchange strategy to ensure all members understand the entire project:
 
-### Daily Stand-ups (15 min)
+### Daily Stand-ups
 Each member reports progress, blockers, and planned tasks.
 
-### Weekly Deep Dive (1 hour)
+### Weekly Deep Dive
 - **Week 1:** Data Pre-processing Lead presents data cleaning pipeline
 - **Week 2:** Research & Analysis Lead presents analysis findings and hypotheses
 - **Week 3:** Visualization Lead presents dashboard architecture
