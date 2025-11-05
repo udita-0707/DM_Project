@@ -1,2 +1,0 @@
-# Data acquisition module
-
