@@ -1,6 +1,6 @@
 # Problem Understanding and Identification
 
-This document articulates our core research problem, objectives, and structured execution plan, addressing the **Problem Understanding and Identification** evaluation criterion (20 Marks).
+This document articulates our core research problem, objectives, and structured execution plan, addressing the **Problem Understanding and Identification** evaluation criterion.
 
 ## 1. Problem Statement
 
