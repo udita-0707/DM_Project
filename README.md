@@ -24,22 +24,22 @@ We are analyzing large-scale scientific publication data from **arXiv** and **Se
 
 ## Team Roles
 
-### Data Pre-processing Lead (3-4 hours)
+### Data Pre-processing Lead
 - Download and process arXiv dataset
 - Create sample extraction (5K-10K records)
 - Document data quality
 
-### Research & Analysis Lead (5-6 hours)
+### Research & Analysis Lead
 - Implement exploratory analysis and test hypotheses
 - Add statistical tests (t-test, ANOVA)
 - Generate static visualizations
 
-### Visualization Lead (4-5 hours)
+### Visualization Lead
 - Develop Flask dashboard and interactive word cloud
 - Integrate analysis results
 - Ensure responsive UI/UX
 
-## Quick Setup (15 Minutes)
+## Quick Setup
 
 ```bash
 # Clone and install
