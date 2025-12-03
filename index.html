@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Research Trends Analysis - Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #0f766e;
+            --accent: #059669;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            --gradient-secondary: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            --gradient-success: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+        }
+
+        .header-badges {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .badge:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        /* Navigation */
+        .nav {
+            background: white;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Executive Summary Section */
+        .executive-summary {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border-radius: 24px;
+            padding: 60px;
+            margin-bottom: 80px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        .executive-summary h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .key-takeaways {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .takeaway-card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            border-left: 5px solid var(--primary);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s;
+        }
+
+        .takeaway-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .takeaway-card .icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.75rem;
+            margin-bottom: 20px;
+        }
+
+        .takeaway-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .takeaway-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 100px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-number {
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 2rem;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        /* Phase Cards */
+        .phase-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .phase-card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-2px);
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .phase-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .phase-icon.phase1 {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+
+        .phase-icon.phase2 {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+        }
+
+        .phase-icon.phase3 {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+
+        .phase-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .phase-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .phase-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .phase-feature {
+            background: var(--bg-secondary);
+            padding: 24px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .phase-feature h4 {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .phase-feature ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .phase-feature li {
+            padding: 8px 0;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .phase-feature li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 40px 24px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stat-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            line-height: 1;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+        
+        /* Smaller font for the long number in second stat card */
+        .stat-card:nth-child(2) .stat-value {
+            font-size: 2.2rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-subtext {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+
+        /* Full Width Card */
+        .full-width-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 48px;
+            margin-bottom: 48px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .full-width-card:hover {
+            box-shadow: var(--shadow-xl);
+        }
+
+        .full-width-card .card-header {
+            background: transparent;
+            border-bottom: 2px solid var(--border);
+            padding: 0 0 32px 0;
+            margin-bottom: 32px;
+        }
+
+        .full-width-image {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        /* Key Points Box */
+        .key-points {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-left: 5px solid var(--primary);
+            padding: 32px;
+            border-radius: 16px;
+            margin: 32px 0;
+        }
+
+        .key-points h4 {
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .key-points ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .key-points li {
+            padding: 12px 0;
+            padding-left: 32px;
+            position: relative;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .key-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* Statistical Highlight Box */
+        .stat-highlight {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 5px solid var(--success);
+            padding: 32px;
+            border-radius: 16px;
+            margin: 32px 0;
+        }
+
+        .stat-highlight h4 {
+            color: #065f46;
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stat-highlight .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+            align-items: center;
+        }
+
+        .stat-highlight .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-highlight .stat-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .stat-highlight .stat-value {
+            color: #065f46;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .image-caption {
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-style: italic;
+            text-align: center;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        /* Findings List */
+        .findings-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .findings-list li {
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+            transition: all 0.3s;
+            font-size: 1.05rem;
+        }
+
+        .findings-list li:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
+        }
+
+        .findings-list li::before {
+            content: '✓';
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            margin-right: 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Keyword Badge */
+        .keyword-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 25px;
+            margin: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            border: 2px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        .keyword-badge:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            margin-top: 120px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer h3 {
+            margin-bottom: 24px;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+        }
+
+        .footer p {
+            opacity: 0.9;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2.25rem;
+            }
+
+            .executive-summary {
+                padding: 40px 24px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-content {
+                height: auto;
+                padding: 16px 20px;
+            }
+            
+            .stat-value {
+                font-size: 2rem !important;
+            }
+            
+            .stat-card:nth-child(2) .stat-value {
+                font-size: 1.6rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stat-value {
+                font-size: 1.5rem !important;
+            }
+            
+            .stat-card:nth-child(2) .stat-value {
+                font-size: 1.2rem !important;
+            }
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav, .footer, #scrollToTop {
+                display: none;
+            }
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1><i class="fas fa-microscope"></i> Scientific Research Trends Analysis</h1>
+            <p>Comprehensive Data Mining Project: Analyzing 2.2M+ Research Papers from arXiv & Semantic Scholar</p>
+            <div class="header-badges">
+                <span class="badge"><i class="fas fa-database"></i> 2.2M+ Papers</span>
+                <span class="badge badge-success"><i class="fas fa-check-circle"></i> 6 Core Questions</span>
+                <span class="badge"><i class="fas fa-chart-line"></i> ML Models</span>
+                <span class="badge"><i class="fas fa-globe"></i> 38 Categories</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <div>
+                <a href="#summary" style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">
+                    <i class="fas fa-home"></i> Results Dashboard
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#summary">Executive Summary</a></li>
+                <li><a href="#phases">Methodology</a></li>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#analysis">Analysis</a></li>
+                <li><a href="#conclusions">Conclusions</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Executive Summary Section -->
+        <section id="summary" class="section" style="margin-top: 40px;">
+            <div class="executive-summary">
+                <h2><i class="fas fa-star"></i> Executive Summary</h2>
+                <p style="font-size: 1.2rem; color: var(--text-secondary); text-align: center; max-width: 900px; margin: 0 auto 40px; line-height: 1.8;">
+                    This project presents a comprehensive analysis of <strong>2.2+ million scientific papers</strong> from arXiv (1986-2025), 
+                    enriched with real citation data from Semantic Scholar API. We address six fundamental questions about research trends, 
+                    collaboration patterns, and citation impact using advanced data mining and machine learning techniques.
+                </p>
+                
+                <div class="key-takeaways">
+                    <div class="takeaway-card">
+                        <div class="icon"><i class="fas fa-database"></i></div>
+                        <h3>Massive Dataset</h3>
+                        <p><strong>2,884,305 papers</strong> analyzed across <strong>38 research categories</strong> spanning <strong>39 years</strong> (1986-2025), with <strong>10,000 papers</strong> enriched with real citation metrics.</p>
+                    </div>
+                    <div class="takeaway-card">
+                        <div class="icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Research Growth</h3>
+                        <p>Identified <strong>125+ breakthrough events</strong> and fastest-growing fields. Computer Science leads with <strong>688K papers</strong>, followed by Mathematics (<strong>555K</strong>) and Condensed Matter (<strong>338K</strong>).</p>
+                    </div>
+                    <div class="takeaway-card">
+                        <div class="icon"><i class="fas fa-project-diagram"></i></div>
+                        <h3>Interdisciplinary Impact</h3>
+                        <p><strong>47.6%</strong> of papers are interdisciplinary. Statistical analysis shows interdisciplinary papers receive <strong>significantly more citations</strong> (p=0.000044).</p>
+                    </div>
+                    <div class="takeaway-card">
+                        <div class="icon"><i class="fas fa-brain"></i></div>
+                        <h3>ML Predictions</h3>
+                        <p>Random Forest model achieves <strong>R² = 0.83</strong> for citation prediction. Top feature: <strong>Abstract Length (25.9% importance)</strong>.</p>
+                    </div>
+                    <div class="takeaway-card">
+                        <div class="icon"><i class="fas fa-rocket"></i></div>
+                        <h3>Emerging Trends</h3>
+                        <p>Detected exponential growth in AI/ML keywords: <strong>transformers (8,778% growth)</strong>, <strong>BERT (6,525% growth)</strong>, <strong>distillation (14,740% growth)</strong>.</p>
+                    </div>
+                    <div class="takeaway-card">
+                        <div class="icon"><i class="fas fa-clock"></i></div>
+                        <h3>Citation Patterns</h3>
+                        <p>Citations peak at <strong>12 years</strong> after publication. Analysis reveals changing citation half-life patterns over time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project Phases Section -->
+        <section id="phases" class="section">
+            <div class="section-header">
+                <div class="section-number">0</div>
+                <h2 class="section-title">Project Methodology</h2>
+                <p class="section-subtitle">Three-phase approach: Data preprocessing, exploratory analysis, and comprehensive final analysis</p>
+            </div>
+
+            <div class="full-width-card">
+                <div class="card-header">
+                    <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 12px;">Analysis Approach</h3>
+                    <p style="color: var(--text-secondary); font-size: 1.05rem;">The project followed a systematic three-phase methodology</p>
+                </div>
+                <ul class="findings-list">
+                    <li><strong>Phase 1 - Data Preprocessing:</strong> Extracted and processed 10,000 sample papers from the full arXiv dataset, converting raw JSON to structured CSV format with date parsing and category simplification.</li>
+                    <li><strong>Phase 2 - Exploratory Analysis:</strong> Conducted initial exploratory data analysis and predictive modeling on the 10K sample, including citation prediction (R² = 0.83) and statistical hypothesis testing.</li>
+                    <li><strong>Phase 3 - Comprehensive Analysis:</strong> Processed the complete 2.2M+ paper dataset with memory-efficient batch processing, enriched 10,000 papers with real citation data, and answered all 6 core research questions.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Overview Section -->
+        <section id="overview" class="section">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <h2 class="section-title">Project Overview</h2>
+                <p class="section-subtitle">Large-scale analysis of scientific publication data to uncover patterns in research trends, collaboration, and impact</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">2.2M+</div>
+                    <div class="stat-label">Research Papers</div>
+                    <div class="stat-subtext">Full dataset analyzed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 2.2rem;">2,884,305</div>
+                    <div class="stat-label">Total Papers</div>
+                    <div class="stat-subtext">Complete analysis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1986-2025</div>
+                    <div class="stat-label">Year Range</div>
+                    <div class="stat-subtext">39 years of data</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">38</div>
+                    <div class="stat-label">Research Categories</div>
+                    <div class="stat-subtext">Multi-disciplinary</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">10K</div>
+                    <div class="stat-label">Enriched Citations</div>
+                    <div class="stat-subtext">Semantic Scholar API</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Core Questions</div>
+                    <div class="stat-subtext">Comprehensive analysis</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Comprehensive Analysis Section -->
+        <section id="analysis" class="section">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <h2 class="section-title">Comprehensive Analysis Results</h2>
+                <p class="section-subtitle">Six core research questions answered through comprehensive data analysis</p>
+            </div>
+
+            <!-- Question 1: Research Growth -->
+            <div class="full-width-card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center; gap: 24px;">
+                        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                        <div>
+                            <h3 class="card-title">Question 1: Research Area Growth & Breakthrough Detection</h3>
+                            <p class="card-description">Which research areas show fastest growth and bursts following breakthroughs?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <img src="images/research_growth_full_dataset.png" 
+                         alt="Research Growth Trends" 
+                         class="full-width-image"
+                         style="min-height: 400px; background: #f8fafc;"
+                         onerror="this.onerror=null; this.src='images/research_growth_with_breakthroughs.png';">
+                    <div class="image-caption">Research growth trends (1986-2025) showing publication growth over time, top 10 categories, and breakthrough events (marked with red stars)</div>
+                    
+                    <div class="key-points">
+                        <h4><i class="fas fa-lightbulb"></i> Key Findings</h4>
+                        <ul>
+                            <li><strong>Top Category:</strong> Computer Science (CS) leads with 688,410 papers (23.9% of total)</li>
+                            <li><strong>Second Place:</strong> Mathematics with 555,471 papers (19.3% of total)</li>
+                            <li><strong>Third Place:</strong> Condensed Matter Physics with 337,957 papers (11.7% of total)</li>
+                            <li><strong>Breakthrough Events:</strong> Detected 125+ events where categories showed >50% year-over-year growth</li>
+                            <li><strong>Growth Pattern:</strong> CS and AI-related fields show exponential growth in recent years (2020+)</li>
+                            <li><strong>Historical Trend:</strong> Steady growth across all major categories from 1986-2025, with acceleration post-2010</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2: International Collaboration -->
+            <div class="full-width-card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center; gap: 24px;">
+                        <div class="card-icon"><i class="fas fa-globe"></i></div>
+                        <div>
+                            <h3 class="card-title">Question 2: International Collaboration Analysis</h3>
+                            <p class="card-description">How international are research collaborations? Country dominance by field?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <img src="images/international_collaboration_heatmap.png" 
+                         alt="International Collaboration" 
+                         class="full-width-image"
+                         style="min-height: 400px; background: #f8fafc;">
+                    <div class="image-caption">Country dominance heatmap showing geographic distribution across research fields (left: percentage distribution, right: absolute counts)</div>
+                    
+                    <div class="key-points">
+                        <h4><i class="fas fa-globe-americas"></i> Key Insights</h4>
+                        <ul>
+                            <li><strong>Geographic Distribution:</strong> Analysis reveals country-specific strengths in different research domains</li>
+                            <li><strong>Top Categories:</strong> CS (688K), Math (555K), Cond-Mat (338K), Astrophysics (326K), Physics (201K)</li>
+                            <li><strong>Collaboration Patterns:</strong> International collaboration varies significantly by research field</li>
+                            <li><strong>Field Specialization:</strong> Different countries show dominance in specific research areas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 3: Interdisciplinary Citations -->
+            <div class="full-width-card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center; gap: 24px;">
+                        <div class="card-icon"><i class="fas fa-project-diagram"></i></div>
+                        <div>
+                            <h3 class="card-title">Question 3: Interdisciplinary Citation Analysis</h3>
+                            <p class="card-description">Are interdisciplinary papers cited more frequently than single-discipline papers?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <img src="images/interdisciplinary_citation_analysis.png" 
+                         alt="Interdisciplinary Citations" 
+                         class="full-width-image"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27800%27 height=%27400%27%3E%3Crect fill=%27%23f0f0f0%27 width=%27800%27 height=%27400%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 fill=%27%23999%27 font-family=%27Arial%27 font-size=%2718%27%3EImage not found%3C/text%3E%3C/svg%3E'">
+                    <div class="image-caption">Comparison of citation metrics between single-discipline and interdisciplinary papers using enriched citation data</div>
+                    
+                    <div class="stat-highlight">
+                        <h4><i class="fas fa-chart-bar"></i> Statistical Results</h4>
+                        <div class="stat-row">
+                            <span class="stat-label">Single-Discipline Papers:</span>
+                            <span class="stat-value">1,511,524 papers (52.4%)</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Interdisciplinary Papers:</span>
+                            <span class="stat-value">1,372,781 papers (47.6%)</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Mean Disciplines per Paper:</span>
+                            <span class="stat-value">1.72 disciplines</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Statistical Significance:</span>
+                            <span class="stat-value">p = 0.000044 (Highly Significant)</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Conclusion:</span>
+                            <span class="stat-value">Interdisciplinary papers receive significantly more citations</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 4: Citation Half-Life -->
+            <div class="full-width-card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center; gap: 24px;">
+                        <div class="card-icon"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <h3 class="card-title">Question 4: Citation Half-Life Analysis</h3>
+                            <p class="card-description">How has citation half-life changed over time?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <img src="images/citation_half_life_analysis.png" 
+                         alt="Citation Half-Life" 
+                         class="full-width-image"
+                         style="width: 100%; height: auto; max-width: 100%; display: block !important; margin: 0 auto; background: #f8fafc; opacity: 1 !important; visibility: visible !important;">
+                    <div class="image-caption">Citation patterns by paper age showing how citations evolve over time and how citation half-life has changed across different publication eras</div>
+                    
+                    <div class="key-points">
+                        <h4><i class="fas fa-hourglass-half"></i> Key Findings</h4>
+                        <ul>
+                            <li><strong>Peak Citation Age:</strong> Papers receive maximum citations approximately 12 years after publication</li>
+                            <li><strong>Citation Pattern:</strong> Citations increase gradually, peak around 12 years, then decline</li>
+                            <li><strong>Temporal Trends:</strong> Citation half-life patterns have evolved over different publication eras</li>
+                            <li><strong>Research Impact:</strong> Understanding citation patterns helps predict long-term research impact</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 5: Emerging Keywords -->
+            <div class="full-width-card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center; gap: 24px;">
+                        <div class="card-icon"><i class="fas fa-key"></i></div>
+                        <div>
+                            <h3 class="card-title">Question 5: Emerging Keywords Detection</h3>
+                            <p class="card-description">Which keywords indicate new research frontiers?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <img src="images/emerging_keywords_analysis.png" 
+                         alt="Emerging Keywords" 
+                         class="full-width-image"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27800%27 height=%27400%27%3E%3Crect fill=%27%23f0f0f0%27 width=%27800%27 height=%27400%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 fill=%27%23999%27 font-family=%27Arial%27 font-size=%2718%27%3EImage not found%3C/text%3E%3C/svg%3E'">
+                    <div class="image-caption">Top emerging keywords showing rapid growth in recent years (2020+ vs pre-2020)</div>
+                    
+                    <div style="margin-top: 32px; padding: 32px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 16px; border-left: 5px solid var(--warning);">
+                        <h4 style="margin-bottom: 24px; color: #92400e; font-weight: 700; font-size: 1.3rem; display: flex; align-items: center; gap: 12px;">
+                            <i class="fas fa-rocket"></i> Top Emerging Keywords (2020+ vs Pre-2020)
+                        </h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+                            <span class="keyword-badge"><strong>distillation</strong> - 14,740% growth</span>
+                            <span class="keyword-badge"><strong>transformers</strong> - 8,778% growth</span>
+                            <span class="keyword-badge"><strong>bert</strong> - 6,525% growth</span>
+                            <span class="keyword-badge"><strong>transformer</strong> - 6,161% growth</span>
+                            <span class="keyword-badge"><strong>multilingual</strong> - 5,598% growth</span>
+                            <span class="keyword-badge"><strong>continual</strong> - 5,333% growth</span>
+                            <span class="keyword-badge"><strong>instructions</strong> - 4,405% growth</span>
+                            <span class="keyword-badge"><strong>gnns</strong> - 3,345% growth</span>
+                            <span class="keyword-badge"><strong>prompts</strong> - 3,213% growth</span>
+                            <span class="keyword-badge"><strong>clip</strong> - 2,815% growth</span>
+                        </div>
+                        <p style="color: #78350f; font-size: 1.05rem; line-height: 1.8; font-weight: 500;">
+                            <strong>Insight:</strong> The analysis reveals a dramatic shift toward transformer-based architectures, large language models, and multimodal AI systems. Keywords like "distillation", "transformers", and "bert" show exponential growth, indicating these are the cutting-edge research frontiers in computer science and artificial intelligence.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 6: Word Cloud (Static Image) -->
+            <div class="full-width-card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center; gap: 24px;">
+                        <div class="card-icon"><i class="fas fa-cloud"></i></div>
+                        <div>
+                            <h3 class="card-title">Question 6: Word Cloud Analysis</h3>
+                            <p class="card-description">Word cloud visualization showing frequency of words that appear alongside keywords in paper titles (Year range: 2002-2025)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div style="background: var(--bg-secondary); padding: 40px; border-radius: 16px;">
+                        <p style="margin-bottom: 28px; color: var(--text-secondary); font-size: 1.1rem; line-height: 1.8;">
+                            The word cloud visualization below shows the frequency of words that appear alongside various keywords 
+                            in the titles of research papers. <strong>Year range: 2002-2025</strong>.
+                        </p>
+                        
+                        <div style="margin-bottom: 24px; padding: 24px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; border-left: 4px solid var(--primary);">
+                            <p style="color: var(--primary-dark); font-weight: 600; margin-bottom: 12px;">
+                                <i class="fas fa-info-circle"></i> Example Word Clouds
+                            </p>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 8px;">
+                                Below are example word cloud visualizations for popular research keywords. These were generated from the analysis of paper titles containing keywords like "quantum", "neural", "transformer", and "climate".
+                            </p>
+                            <p style="color: var(--text-light); font-size: 0.85rem; font-style: italic; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(30, 64, 175, 0.2);">
+                                <i class="fas fa-camera"></i> <strong>Note:</strong> The word cloud image shown below is a screenshot from the original interactive word cloud generator, acting as a static placeholder for this GitHub Pages version.
+                            </p>
+                        </div>
+
+                        <div id="wordcloud-container" style="background: white; padding: 24px; border-radius: 12px; box-shadow: var(--shadow-md); margin-bottom: 24px;">
+                            <img src="images/wordcloud_example.png" 
+                                 alt="Word Cloud Visualization Example" 
+                                 class="full-width-image"
+                                 style="width: 100%; height: auto; border-radius: 8px;"
+                                 onerror="this.onerror=null; this.style.display='none'; document.getElementById('wordcloud-placeholder').style.display='block';">
+                            <div class="image-caption" style="margin-top: 16px;">
+                                <i class="fas fa-info-circle"></i> This is a screenshot from the original interactive word cloud generator, shown here as a static example. The original implementation allowed users to search for keywords and generate word clouds dynamically.
+                            </div>
+                            <div id="wordcloud-placeholder" style="display: none; text-align: center; padding: 60px 20px; background: #f8fafc; border-radius: 8px; border: 2px dashed var(--border);">
+                                <i class="fas fa-cloud" style="font-size: 4rem; color: var(--text-light); margin-bottom: 20px;"></i>
+                                <p style="color: var(--text-secondary); font-size: 1.1rem; font-weight: 500;">
+                                    Word Cloud Image<br>
+                                    <span style="font-size: 0.9rem; color: var(--text-light);">Please add a word cloud screenshot/image named "wordcloud_example.png" to the images folder</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px; padding: 24px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; border-left: 4px solid var(--success);">
+                            <h4 style="color: #065f46; font-weight: 700; margin-bottom: 16px; font-size: 1.2rem;">
+                                <i class="fas fa-lightbulb"></i> How to Use Word Clouds
+                            </h4>
+                            <ul style="list-style: none; padding: 0; color: var(--text-secondary);">
+                                <li style="margin-bottom: 12px; padding-left: 28px; position: relative;">
+                                    <i class="fas fa-check-circle" style="position: absolute; left: 0; color: var(--success);"></i>
+                                    <strong>Keyword Search:</strong> Word clouds are generated by searching for papers containing specific keywords in their titles
+                                </li>
+                                <li style="margin-bottom: 12px; padding-left: 28px; position: relative;">
+                                    <i class="fas fa-check-circle" style="position: absolute; left: 0; color: var(--success);"></i>
+                                    <strong>Frequency Analysis:</strong> The size of each word indicates its frequency of co-occurrence with the search keyword
+                                </li>
+                                <li style="margin-bottom: 12px; padding-left: 28px; position: relative;">
+                                    <i class="fas fa-check-circle" style="position: absolute; left: 0; color: var(--success);"></i>
+                                    <strong>Research Insights:</strong> Larger words represent more common research themes and connections
+                                </li>
+                                <li style="margin-bottom: 12px; padding-left: 28px; position: relative;">
+                                    <i class="fas fa-check-circle" style="position: absolute; left: 0; color: var(--success);"></i>
+                                    <strong>Year Filtering:</strong> Analysis covers papers from 2002-2025, allowing temporal trend analysis
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusions Section -->
+        <section id="conclusions" class="section">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <h2 class="section-title">Key Conclusions & Insights</h2>
+                <p class="section-subtitle">Summary of major findings and implications for scientific research</p>
+            </div>
+
+            <div class="full-width-card" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-left: 5px solid var(--primary);">
+                <div class="card-header" style="border: none;">
+                    <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 12px; color: var(--primary-dark);">
+                        <i class="fas fa-lightbulb"></i> Major Findings
+                    </h3>
+                </div>
+                <ul class="findings-list" style="background: transparent;">
+                    <li style="background: rgba(255,255,255,0.9);"><strong>Research Growth:</strong> Computer Science has emerged as the dominant field with 688K papers, showing exponential growth especially in AI/ML subfields. Breakthrough events are concentrated in transformative technologies like transformers and large language models.</li>
+                    <li style="background: rgba(255,255,255,0.9);"><strong>Interdisciplinary Advantage:</strong> Papers spanning multiple disciplines (47.6% of dataset) receive significantly more citations, suggesting that cross-disciplinary research has greater impact and visibility in the scientific community.</li>
+                    <li style="background: rgba(255,255,255,0.9);"><strong>Citation Patterns:</strong> Citations follow a predictable lifecycle, peaking around 12 years after publication. This pattern helps predict long-term research impact and informs publication strategies.</li>
+                    <li style="background: rgba(255,255,255,0.9);"><strong>Emerging Frontiers:</strong> AI/ML research shows explosive growth with keywords like "transformers" (8,778% growth) and "distillation" (14,740% growth), indicating these are the current research frontiers.</li>
+                    <li style="background: rgba(255,255,255,0.9);"><strong>Predictive Modeling:</strong> Machine learning models can predict citation counts with R² = 0.83, with abstract length being the most important feature, suggesting that detailed research descriptions correlate with impact.</li>
+                    <li style="background: rgba(255,255,255,0.9);"><strong>Data Scale:</strong> Analysis of 2.2M+ papers reveals patterns that would be invisible in smaller datasets, demonstrating the value of large-scale data mining approaches.</li>
+                </ul>
+            </div>
+
+            <div class="full-width-card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 5px solid var(--success);">
+                <div class="card-header" style="border: none;">
+                    <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 12px; color: #065f46;">
+                        <i class="fas fa-trophy"></i> Project Achievements
+                    </h3>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                    <div style="background: rgba(255,255,255,0.9); padding: 24px; border-radius: 12px;">
+                        <h4 style="color: var(--primary); font-weight: 700; margin-bottom: 12px; font-size: 1.2rem;"><i class="fas fa-database"></i> Data Processing</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-secondary);">
+                            <li style="margin-bottom: 8px;">✓ Processed 2,884,305 papers</li>
+                            <li style="margin-bottom: 8px;">✓ 38 research categories analyzed</li>
+                            <li style="margin-bottom: 8px;">✓ 39 years of data (1986-2025)</li>
+                            <li style="margin-bottom: 8px;">✓ Memory-efficient chunked processing</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.9); padding: 24px; border-radius: 12px;">
+                        <h4 style="color: var(--primary); font-weight: 700; margin-bottom: 12px; font-size: 1.2rem;"><i class="fas fa-chart-bar"></i> Analysis</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-secondary);">
+                            <li style="margin-bottom: 8px;">✓ 6 core questions answered</li>
+                            <li style="margin-bottom: 8px;">✓ 125+ breakthrough events detected</li>
+                            <li style="margin-bottom: 8px;">✓ Statistical significance testing</li>
+                            <li style="margin-bottom: 8px;">✓ Comprehensive visualizations</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.9); padding: 24px; border-radius: 12px;">
+                        <h4 style="color: var(--primary); font-weight: 700; margin-bottom: 12px; font-size: 1.2rem;"><i class="fas fa-brain"></i> Machine Learning</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-secondary);">
+                            <li style="margin-bottom: 8px;">✓ R² = 0.83 (training)</li>
+                            <li style="margin-bottom: 8px;">✓ RMSE = 94.34 (test)</li>
+                            <li style="margin-bottom: 8px;">✓ Feature importance analysis</li>
+                            <li style="margin-bottom: 8px;">✓ 10K papers enriched with citations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <h3>Scientific Research Trends Analysis</h3>
+            <p>Comprehensive data mining project analyzing research papers from arXiv with enriched citation data from Semantic Scholar</p>
+            <p style="margin-top: 32px; opacity: 0.8; font-size: 1rem;">
+                <i class="fas fa-code"></i> Built with Python, Pandas, Scikit-learn, and Matplotlib<br>
+                <i class="fas fa-database"></i> Data Sources: arXiv.org & Semantic Scholar API<br>
+                <i class="fas fa-chart-line"></i> Analysis Date: December 2025
+            </p>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTop" style="display: none; position: fixed; bottom: 30px; right: 30px; background: var(--gradient-primary); color: white; border: none; border-radius: 50%; width: 56px; height: 56px; font-size: 1.5rem; cursor: pointer; box-shadow: var(--shadow-xl); z-index: 1000; transition: all 0.3s;" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Show/hide scroll to top button
+        window.addEventListener('scroll', function() {
+            const scrollBtn = document.getElementById('scrollToTop');
+            if (window.pageYOffset > 300) {
+                scrollBtn.style.display = 'block';
+            } else {
+                scrollBtn.style.display = 'none';
+            }
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading animation for images
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            // Check if image is already loaded (cached)
+            if (img.complete && img.naturalHeight !== 0) {
+                img.style.opacity = '1';
+            } else {
+                img.style.opacity = '0';
+            }
+            img.style.transition = 'opacity 0.3s';
+        });
+
+        // Add intersection observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .full-width-card, .takeaway-card, .phase-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
