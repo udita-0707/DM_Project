@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: research-trends-dashboard
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd src/dashboard && gunicorn -w 4 -b 0.0.0.0:$PORT app:app
+    envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: MPLCONFIGDIR
+        value: /tmp/matplotlib
+    plan: starter  # or free for testing

@@ -1,135 +1,191 @@
 # Scientific Research Trends Analysis
 
-We are analyzing large-scale scientific publication data from **arXiv** and **Semantic Scholar** to uncover patterns of scientific progress, collaboration, and influence. Our project addresses exploratory questions related to research growth, international collaboration, interdisciplinarity, and emerging keywords.
+A comprehensive data mining project analyzing **2.2+ million scientific papers** from arXiv to uncover patterns in scientific research, collaboration, and impact.
 
-## Technologies
+## 📊 Project Overview
 
-- **Python 3.8+**, **pandas**, **matplotlib/seaborn**
-- **Flask** - Web dashboard
-- **wordcloud** - Interactive visualizations
-- **scikit-learn** - ML and statistical analysis
-- **requests** - API integration
+This project combines arXiv publication data with real citation metrics from Semantic Scholar API to provide insights into:
+- Research area growth and breakthrough detection
+- International collaboration patterns
+- Interdisciplinary research impact
+- Citation half-life analysis
+- Emerging keywords and research frontiers
+- Predictive modeling for citation counts
 
-## Project Structure
+**📖 For detailed information about achievements, preprocessing techniques, and results, see [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)**
 
-| Directory | Purpose |
-| :--- | :--- |
-| `data/raw` | Original datasets (e.g., `arxiv-metadata-oai-snapshot.json`) |
-| `data/processed` | Cleaned data and analysis results |
-| `src/data_acquisition` | Data downloading, cleaning, and processing scripts |
-| `src/analysis` | Exploratory analysis and static visualizations |
-| `src/dashboard` | Flask application with interactive word cloud |
-| `src/utils` | Utility functions and helpers |
-| `docs` | Documentation and evaluation materials |
+## 🚀 Quick Start
 
-## Team Roles
-
-### Data Pre-processing Lead
-- Download and process arXiv dataset
-- Create sample extraction (5K-10K records)
-- Document data quality
-
-### Research & Analysis Lead
-- Implement exploratory analysis and test hypotheses
-- Add statistical tests (t-test, ANOVA)
-- Generate static visualizations
-
-### Visualization Lead
-- Develop Flask dashboard and interactive word cloud
-- Integrate analysis results
-- Ensure responsive UI/UX
-
-## Quick Setup
+### 1. Setup Environment
 
 ```bash
-# Clone and install
-git clone https://github.com/username/DM_Project
+# Clone repository
+git clone <repository-url>
 cd DM_Project
+
+# Create virtual environment
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
-
-# Test installation
-python3 -c "import pandas, flask, matplotlib; print('✓ Dependencies installed successfully!')"
 ```
 
-## Data Acquisition
+### 2. Process Data
 
-### Dataset Options
-
-| Type | Records | Size | Use Case |
-|------|---------|------|----------|
-| Mock (provided) | 7 | 2 KB | Initial testing |
-| Sample (create) | 10K | ~50 MB | Development |
-| Full (download) | 2.2M+ | 3.5 GB | Final run |
-
-### Steps
-
-1. Download `arxiv-metadata-oai-snapshot.json` from [Kaggle arXiv Dataset](https://www.kaggle.com/datasets/Cornell-University/arxiv)
-2. Place in `data/raw/`
-3. Extract sample:
 ```bash
-python3 src/data_acquisition/create_sample_data.py \
-    --input data/raw/arxiv-metadata-oai-snapshot.json \
-    --output data/raw/arxiv_sample_10k.json \
-    --size 10000
-```
-4. Process data:
-```bash
-python3 src/data_acquisition/arxiv_dataset.py
+# Process full dataset (2.2M+ papers)
+python3 src/data_acquisition/arxiv_dataset.py --full
+
+# Or process sample for testing
+python3 src/data_acquisition/arxiv_dataset.py --sample
 ```
 
-## Running Analysis and Dashboard
-
-### Using Helper Script (Recommended)
+### 3. Run Analysis
 
 ```bash
-./run.sh process-data  # Process data
-./run.sh analyze       # Run analysis
-./run.sh dashboard     # Start web server (http://localhost:8080)
-./run.sh full          # Complete pipeline
-./run.sh help          # View all commands
+# Run comprehensive analysis
+python3 src/analysis/comprehensive_analysis.py
+
+# Run predictive models
+python3 src/analysis/predictive_models.py
 ```
 
-### Manual Execution
+### 4. Start Dashboard
 
 ```bash
-# Run analysis
-python3 src/analysis/exploratory_analysis.py
+# Using helper script (recommended)
+./run.sh dashboard
 
-# Start dashboard
+# Or manually
 PYTHONPATH=$PWD gunicorn -w 4 -b 0.0.0.0:8080 "src.dashboard.app:app"
-# Access at http://localhost:8080
 ```
 
-## Exploratory Questions
+Access dashboard at: **http://localhost:8080**
 
-1. ✅ Research Area Growth - `analyze_research_growth()`
-2. ✅ International Collaboration - `analyze_collaboration()`
-3. ✅ Interdisciplinarity vs Citations - `analyze_interdisciplinarity()`
-4. ⚠️ Citation Half-Life - Requires Semantic Scholar API
-5. ✅ Emerging Keywords - `analyze_emerging_keywords()`
-6. ✅ Interactive Word Cloud - Flask dashboard
+## 📁 Project Structure
 
-## Known Limitations
+```
+DM_Project/
+├── data/
+│   ├── raw/                    # Original arXiv JSON files
+│   ├── processed/              # Cleaned CSV files
+│   │   ├── arxiv_processed.csv # Main processed dataset (2.2M+ papers)
+│   │   ├── enriched/           # Datasets with citation data
+│   │   └── analysis_results/   # All analysis outputs and visualizations
+├── src/
+│   ├── data_acquisition/       # Data processing and enrichment scripts
+│   │   ├── arxiv_dataset.py   # Main preprocessing script
+│   │   ├── enrich_with_citations.py  # Citation enrichment
+│   │   └── semanticscholar_api.py   # API client
+│   ├── analysis/               # Analysis and visualization scripts
+│   │   ├── comprehensive_analysis.py  # 6 core questions
+│   │   ├── predictive_models.py       # ML models
+│   │   └── batch_full_dataset_analysis.py  # Full dataset analysis
+│   ├── dashboard/              # Flask web application
+│   │   ├── app.py              # Main Flask app
+│   │   └── templates/          # HTML templates
+│   └── utils/                  # Utility functions
+├── venv/                       # Python virtual environment
+├── requirements.txt            # Python dependencies
+├── run.sh                      # Helper script for common tasks
+├── README.md                   # This file
+└── PROJECT_SUMMARY.md          # Detailed project documentation
+```
 
-1. **Citation Data**: ArXiv lacks citation counts. Use Semantic Scholar API (rate-limited) or version count as proxy
-2. **Country Data**: No structured location data. Focus on co-authorship analysis
-3. **Large Dataset**: 3.5 GB dataset. Develop on 10K sample, final run on full dataset
+## 🛠️ Technologies
 
-## Git Workflow
+- **Python 3.8+** - Core programming language
+- **pandas** - Data manipulation and analysis
+- **numpy** - Numerical computations
+- **matplotlib/seaborn** - Data visualization
+- **scikit-learn** - Machine learning models
+- **Flask** - Web dashboard framework
+- **gunicorn** - Production web server
+- **requests** - HTTP API calls
+- **wordcloud** - Interactive word cloud generation
 
-We commit frequently with clear messages:
-- `FEAT:` - New features
-- `FIX:` - Bug fixes  
-- `DATA:` - Data processing
-- `DOCS:` - Documentation
-- `VIZ:` - Visualizations
+## 📈 Key Results
 
-Work on feature branches and merge to `main` after review.
+- **Total Papers Analyzed**: 2,884,305 (full dataset: 1986-2025)
+- **Enriched Sample**: 10,000 papers with real citations (99.3% success rate)
+- **Research Categories**: 38 categories analyzed
+- **Core Questions**: 6/6 answered
+- **ML Model Performance**: R² = 0.83 (training), RMSE = 94.34 (test)
 
+## 🎯 Main Features
 
-## License
+### 1. Comprehensive Analysis
+- Research area growth trends and breakthrough detection
+- International collaboration analysis
+- Interdisciplinary citation impact
+- Citation half-life analysis
+- Emerging keywords detection
+- Predictive modeling
+
+### 2. Interactive Dashboard
+- **Main Dashboard**: Interactive word cloud generator with keyword search
+- **Results Page**: Comprehensive HTML page with all analyses and visualizations
+
+### 3. Full Dataset Support
+- Batch processing for 2.2M+ papers
+- Memory-efficient chunked processing
+- Parallel processing options
+
+## 📝 Usage Examples
+
+### Process Full Dataset
+```bash
+python3 src/data_acquisition/arxiv_dataset.py --full
+```
+
+### Enrich with Citations (requires API key)
+```bash
+export SEMANTIC_SCHOLAR_API_KEY='your_api_key'
+python3 src/data_acquisition/enrich_with_citations.py --sample-size 10000 --strategy random
+```
+
+### Run All Analyses
+```bash
+./run.sh analyze
+```
+
+### Analyze Full Dataset
+```bash
+python3 src/analysis/batch_full_dataset_analysis.py --chunk-size 100000 --parallel
+```
+
+## 📚 Documentation
+
+- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Complete project documentation including:
+  - Detailed achievements
+  - Preprocessing techniques explained
+  - Results summary
+  - Technical details
+
+## ⚠️ Requirements
+
+- Python 3.8 or higher
+- 8GB+ RAM (for full dataset processing)
+- Internet connection (for API enrichment)
+- Semantic Scholar API key (optional, for citation enrichment)
+
+## 🔧 Helper Scripts
+
+The `run.sh` script provides convenient commands:
+
+```bash
+./run.sh help          # Show all available commands
+./run.sh process-data  # Process arXiv dataset
+./run.sh analyze       # Run all analyses
+./run.sh dashboard     # Start web dashboard
+./run.sh full          # Complete pipeline
+```
+
+## 📄 License
 
 Educational project for Data Mining course.
 
+---
+
+**For detailed information about preprocessing techniques, achievements, and results, please refer to [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)**

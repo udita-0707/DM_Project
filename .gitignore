@@ -39,6 +39,13 @@ data/processed/*.csv
 data/processed/analysis_results/*.png
 data/processed/analysis_results/*.csv
 !data/processed/arxiv_processed_mock.csv
+data/processed/enriched/*.csv
+data/raw/arxiv-metadata-oai-snapshot.json
+data/raw/arxiv_sample_10k.json
+data/processed/enriched/*.csv
+data/processed/enriched/*.json
+
+
 
 
 # IDE

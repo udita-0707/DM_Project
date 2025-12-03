@@ -1,0 +1,19 @@
+{
+  "single_discipline": {
+    "count": 5259,
+    "mean": 26.90815744438106,
+    "median": 6.0,
+    "std": 240.2364732371432
+  },
+  "interdisciplinary": {
+    "count": 4667,
+    "mean": 25.921148489393616,
+    "median": 7.0,
+    "std": 99.98034417051798
+  },
+  "statistical_test": {
+    "u_statistic": 12832580.5,
+    "p_value": 3.912047704948953e-05,
+    "significant": true
+  }
+}

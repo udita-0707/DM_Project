@@ -22,37 +22,71 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def create_citation_proxy(df):
     """
-    Creates a proxy for citation count since we don't have real citation data.
-    Uses paper age and version count as proxies.
+    PREPROCESSING: Creates a citation proxy when real citation data is unavailable.
+    
+    Why: arXiv doesn't provide citation counts. We need a metric to analyze research impact.
+    Not all papers can be enriched via API (rate limits, papers not in Semantic Scholar).
+    
+    How: Combine two indicators:
+    1. Paper age: Older papers have more time to accumulate citations (60% weight)
+    2. Version count: More versions suggest more interest/updates (40% weight)
+    
+    The proxy is normalized to 0-100 scale. Real citations are used when available,
+    proxy is used as fallback.
+    
+    Args:
+        df: DataFrame with submission_year and versions columns
+    
+    Returns:
+        DataFrame with citation_metric column (real citations or proxy)
     """
-    # Calculate paper age (years since submission)
+    # PREPROCESSING: Calculate paper age (years since submission)
+    # Why: Older papers typically have more citations (more time to be cited)
     current_year = 2025
     df['paper_age'] = current_year - df['submission_year']
     
-    # Count number of versions (more versions might indicate more interest/citations)
+    # PREPROCESSING: Count number of versions per paper
+    # Why: Papers with more versions often indicate active research/updates, 
+    # which may correlate with citations
     df['version_count'] = df['versions'].apply(
         lambda x: len(ast.literal_eval(x)) if isinstance(x, str) else len(x) if isinstance(x, list) else 1
     )
     
-    # Create a composite citation proxy
-    # Older papers and papers with more versions likely have more citations
-    # Normalize and combine
+    # PREPROCESSING: Create composite citation proxy
+    # How: Normalize both metrics to 0-1, weight them (age 60%, versions 40%), scale to 0-100
+    # Rationale: Age is more important (time = more citations), but versions also matter
     df['citation_proxy'] = (
         (df['paper_age'] / df['paper_age'].max()) * 0.6 +
         (df['version_count'] / df['version_count'].max()) * 0.4
-    ) * 100  # Scale to 0-100
+    ) * 100  # Scale to 0-100 range
+    
+    # PREPROCESSING: Use real citations when available, proxy otherwise
+    # Why: Real citations are more accurate, but proxy allows analysis of all papers
+    if 'citation_count' in df.columns:
+        # Fill missing citation counts with proxy
+        # Note: Real citations are typically much larger (0-1000s) than proxy (0-100)
+        df['citation_metric'] = df['citation_count'].fillna(df['citation_proxy'])
+        df['using_real_citations'] = df['citation_count'].notna()
+        real_count = df['using_real_citations'].sum()
+        if real_count > 0:
+            print(f"  Using real citation data for {real_count} papers ({100*real_count/len(df):.1f}%)")
+            print(f"  Using citation proxy for {len(df) - real_count} papers")
+    else:
+        df['citation_metric'] = df['citation_proxy']
+        df['using_real_citations'] = False
+        print(f"  No real citation data found - using citation proxy for all papers")
     
     return df
 
 def test_interdisciplinarity_hypothesis(df):
     """
-    Tests Hypothesis 1: "Interdisciplinary Premium"
+    Statistical test: "Interdisciplinary Premium"
     Papers with 3+ disciplines have different citation patterns than single-discipline papers.
     
-    Uses ANOVA to compare citation proxy across discipline count groups.
+    Uses ANOVA to compare citations (real or proxy) across discipline count groups.
     """
     print("\n" + "="*80)
-    print("STATISTICAL TEST: Interdisciplinarity vs Citation Proxy")
+    print("STATISTICAL TEST: Interdisciplinarity vs Citations")
     print("="*80)
     
     # Ensure derived features exist
@@ -61,7 +95,7 @@ def test_interdisciplinarity_hypothesis(df):
     )
     df['discipline_count'] = df['main_categories'].apply(len)
     
-    # Create citation proxy
+    # Create citation metric (real citations if available, proxy otherwise)
     df = create_citation_proxy(df)
     
     # Group papers by discipline count
@@ -73,14 +107,14 @@ def test_interdisciplinarity_hypothesis(df):
     )
     
     groups = {
-        'Single': df[df['discipline_group'] == 'Single']['citation_proxy'].dropna(),
-        'Two': df[df['discipline_group'] == 'Two']['citation_proxy'].dropna(),
-        'Three+': df[df['discipline_group'] == 'Three+']['citation_proxy'].dropna()
+        'Single': df[df['discipline_group'] == 'Single']['citation_metric'].dropna(),
+        'Two': df[df['discipline_group'] == 'Two']['citation_metric'].dropna(),
+        'Three+': df[df['discipline_group'] == 'Three+']['citation_metric'].dropna()
     }
     
     # Descriptive statistics
     print("\nDescriptive Statistics by Discipline Group:")
-    desc_stats = df.groupby('discipline_group')['citation_proxy'].agg(['count', 'mean', 'std', 'median'])
+    desc_stats = df.groupby('discipline_group')['citation_metric'].agg(['count', 'mean', 'std', 'median'])
     print(desc_stats.round(3))
     
     # Perform ANOVA
@@ -93,23 +127,23 @@ def test_interdisciplinarity_hypothesis(df):
     
     if p_value < 0.05:
         print(f"  ✓ Result: REJECT null hypothesis (p < 0.05)")
-        print(f"    There IS a significant difference in citation proxy across discipline groups.")
+        print(f"    There IS a significant difference in citations across discipline groups.")
     else:
         print(f"  ✗ Result: FAIL to reject null hypothesis (p >= 0.05)")
-        print(f"    No significant difference found in citation proxy across discipline groups.")
+        print(f"    No significant difference found in citations across discipline groups.")
     
     # Post-hoc test (Tukey HSD) if ANOVA is significant
     if p_value < 0.05:
         print(f"\nPost-hoc Analysis (Tukey HSD):")
         # Prepare data for Tukey HSD
         tukey_data = pd.DataFrame({
-            'citation_proxy': pd.concat([groups['Single'], groups['Two'], groups['Three+']]),
+            'citation_metric': pd.concat([groups['Single'], groups['Two'], groups['Three+']]),
             'discipline_group': (['Single'] * len(groups['Single']) + 
                                ['Two'] * len(groups['Two']) + 
                                ['Three+'] * len(groups['Three+']))
         })
         
-        tukey_result = pairwise_tukeyhsd(tukey_data['citation_proxy'], tukey_data['discipline_group'])
+        tukey_result = pairwise_tukeyhsd(tukey_data['citation_metric'], tukey_data['discipline_group'])
         print(tukey_result)
     
     # Visualization
@@ -125,10 +159,10 @@ def test_interdisciplinarity_hypothesis(df):
         patch.set_facecolor(color)
         patch.set_alpha(0.7)
     
-    ax.set_title('Citation Proxy by Discipline Count\n(ANOVA Test)', 
+    ax.set_title('Citations by Discipline Count\n(ANOVA Test)', 
                 fontsize=14, fontweight='bold', pad=15)
     ax.set_xlabel('Number of Disciplines', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Citation Proxy Score', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Citation Count/Score', fontsize=12, fontweight='bold')
     ax.grid(True, alpha=0.3, linestyle='--', axis='y')
     
     # Add p-value annotation
@@ -146,15 +180,15 @@ def test_interdisciplinarity_hypothesis(df):
             'Three+': groups['Three+']
         }),
         var_name='Discipline Group',
-        value_name='Citation Proxy'
+        value_name='Citations'
     )
     
-    sns.violinplot(data=violin_data, x='Discipline Group', y='Citation Proxy', 
+    sns.violinplot(data=violin_data, x='Discipline Group', y='Citations', 
                    palette=colors, ax=ax)
-    ax.set_title('Distribution of Citation Proxy by Discipline Count', 
+    ax.set_title('Distribution of Citations by Discipline Count', 
                 fontsize=14, fontweight='bold', pad=15)
     ax.set_xlabel('Number of Disciplines', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Citation Proxy Score', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Citation Count/Score', fontsize=12, fontweight='bold')
     ax.grid(True, alpha=0.3, linestyle='--', axis='y')
     
     plt.tight_layout()
@@ -196,34 +230,34 @@ def test_correlation_analysis(df):
     # Test correlations
     correlations = []
     
-    # 1. Author count vs Citation proxy
+    # 1. Author count vs Citations
     corr_pearson, p_pearson = pearsonr(df['num_authors'].dropna(), 
-                                       df.loc[df['num_authors'].notna(), 'citation_proxy'])
+                                       df.loc[df['num_authors'].notna(), 'citation_metric'])
     correlations.append({
         'Variable 1': 'Number of Authors',
-        'Variable 2': 'Citation Proxy',
+        'Variable 2': 'Citations',
         'Pearson r': corr_pearson,
         'p-value': p_pearson,
         'Significant': p_pearson < 0.05
     })
     
-    # 2. Discipline count vs Citation proxy
+    # 2. Discipline count vs Citations
     corr_pearson, p_pearson = pearsonr(df['discipline_count'].dropna(), 
-                                       df.loc[df['discipline_count'].notna(), 'citation_proxy'])
+                                       df.loc[df['discipline_count'].notna(), 'citation_metric'])
     correlations.append({
         'Variable 1': 'Discipline Count',
-        'Variable 2': 'Citation Proxy',
+        'Variable 2': 'Citations',
         'Pearson r': corr_pearson,
         'p-value': p_pearson,
         'Significant': p_pearson < 0.05
     })
     
-    # 3. Submission year vs Citation proxy
+    # 3. Submission year vs Citations
     corr_pearson, p_pearson = pearsonr(df['submission_year'].dropna(), 
-                                       df.loc[df['submission_year'].notna(), 'citation_proxy'])
+                                       df.loc[df['submission_year'].notna(), 'citation_metric'])
     correlations.append({
         'Variable 1': 'Submission Year',
-        'Variable 2': 'Citation Proxy',
+        'Variable 2': 'Citations',
         'Pearson r': corr_pearson,
         'p-value': p_pearson,
         'Significant': p_pearson < 0.05
@@ -249,9 +283,9 @@ def test_correlation_analysis(df):
     axes = axes.flatten()
     
     pairs = [
-        ('num_authors', 'citation_proxy', 'Number of Authors', 'Citation Proxy'),
-        ('discipline_count', 'citation_proxy', 'Discipline Count', 'Citation Proxy'),
-        ('submission_year', 'citation_proxy', 'Submission Year', 'Citation Proxy'),
+        ('num_authors', 'citation_metric', 'Number of Authors', 'Citations'),
+        ('discipline_count', 'citation_metric', 'Discipline Count', 'Citations'),
+        ('submission_year', 'citation_metric', 'Submission Year', 'Citations'),
         ('num_authors', 'discipline_count', 'Number of Authors', 'Discipline Count')
     ]
     
@@ -358,7 +392,7 @@ def main():
     """Main function to run all statistical tests."""
     try:
         print("\n" + "="*80)
-        print("STATISTICAL ANALYSIS AND HYPOTHESIS TESTING")
+        print("STATISTICAL ANALYSIS")
         print("="*80)
         
         # Load data

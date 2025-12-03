@@ -1,3 +1,14 @@
+"""
+Exploratory Data Analysis Module
+
+Performs comprehensive exploratory analysis on arXiv publication data including:
+- Research area growth trends over time
+- Collaboration patterns (co-authorship analysis)
+- Interdisciplinarity analysis
+- Category co-occurrence networks
+- Emerging keywords detection
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -6,20 +17,31 @@ import sys
 import ast
 from collections import Counter
 
-# Add project root to path to allow imports
+# Add project root to path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from src.utils.data_loader import load_processed_data
 
-# Configuration
+# Output directory for analysis results
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'processed', 'analysis_results', 'exploratory_analysis')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+
 def analyze_research_growth(df):
     """
-    Analyzes the growth of research areas over time.
+    Analyze publication growth trends across different research areas over time.
+    
+    Creates time-series visualizations showing how different arXiv categories
+    (cs, physics, math, etc.) have grown in publication volume. Identifies
+    fastest-growing fields and generates publication distribution charts.
+    
+    Args:
+        df: DataFrame with columns 'main_categories', 'submission_year'
+    
+    Returns:
+        None: Saves visualizations and CSV data to OUTPUT_DIR
     """
     print("\n--- 1. Research Area Growth Analysis ---")
     
@@ -88,8 +110,20 @@ def analyze_research_growth(df):
 
 def analyze_collaboration(df):
     """
-    Analyzes collaboration patterns (using co-authorship as a proxy).
-    NOTE: Full analysis requires author affiliation/country data, which is not in the mock dataset.
+    Analyze collaboration patterns using co-authorship as a proxy.
+    
+    Examines the distribution of authors per paper to understand collaboration
+    intensity. Creates visualizations showing single-author vs multi-author papers
+    and collaboration trends over time.
+    
+    Note: Full international collaboration analysis requires author affiliation
+    data which is not available in the arXiv dataset.
+    
+    Args:
+        df: DataFrame with 'authors' column (list or comma-separated string)
+    
+    Returns:
+        None: Saves visualizations to OUTPUT_DIR
     """
     print("\n--- 2. Collaboration Analysis (Co-authorship) ---")
     
@@ -164,8 +198,19 @@ def analyze_collaboration(df):
 
 def analyze_interdisciplinarity(df):
     """
-    Analyzes the relationship between interdisciplinarity and citation count.
-    NOTE: Requires citation data, which is not in the mock dataset.
+    Analyze interdisciplinarity patterns in research publications.
+    
+    Examines how many different research disciplines (categories) appear in each paper.
+    Creates visualizations showing the distribution of single-discipline vs multi-discipline papers.
+    
+    Note: Full citation-based analysis requires Semantic Scholar API data to test
+    whether interdisciplinary papers receive more citations.
+    
+    Args:
+        df: DataFrame with 'main_categories' column (list of category strings)
+    
+    Returns:
+        None: Saves visualization to OUTPUT_DIR
     """
     print("\n--- 3. Interdisciplinarity and Citation Analysis ---")
     
@@ -222,8 +267,17 @@ def analyze_interdisciplinarity(df):
 
 def analyze_category_cooccurrence(df):
     """
-    Creates a network visualization showing which research categories co-occur together.
-    This reveals interdisciplinary connections between fields.
+    Analyze which research categories frequently appear together in papers.
+    
+    Builds a co-occurrence network showing interdisciplinary connections between
+    research fields. Papers with multiple categories reveal cross-disciplinary research.
+    Creates a heatmap visualization of category pairs.
+    
+    Args:
+        df: DataFrame with 'main_categories' column (list of category strings)
+    
+    Returns:
+        dict: Dictionary of category pairs and their co-occurrence counts
     """
     print("\n--- 4.5. Category Co-occurrence Network Analysis ---")
     
@@ -310,7 +364,19 @@ def analyze_category_cooccurrence(df):
 
 def analyze_emerging_keywords(df):
     """
-    Identifies emerging keywords based on frequency and recent growth.
+    Identify frequently occurring keywords in paper titles and abstracts.
+    
+    Extracts and counts keywords from combined title and abstract text to identify
+    common research themes. Creates visualizations of top keywords.
+    
+    Note: True "emerging" keyword detection requires time-series analysis comparing
+    recent vs historical keyword frequencies to identify growth trends.
+    
+    Args:
+        df: DataFrame with 'title' and 'abstract' columns
+    
+    Returns:
+        None: Saves visualization to OUTPUT_DIR
     """
     print("\n--- 5. Emerging Keywords Analysis ---")
     
@@ -360,21 +426,33 @@ def analyze_emerging_keywords(df):
     print("\nNOTE: Real emerging keyword analysis requires a large corpus and time-series comparison.")
 
 def main():
+    """
+    Main entry point for exploratory data analysis.
+    
+    Loads processed arXiv data and runs all exploratory analyses:
+    - Research area growth trends
+    - Collaboration patterns
+    - Interdisciplinarity analysis
+    - Category co-occurrence networks
+    - Emerging keywords identification
+    """
     try:
-        # Load data, using mock=False to use the processed sample
+        # Load processed data (automatically uses enriched data if available)
         df = load_processed_data(mock=False)
         
         # Ensure 'main_categories' is a list of strings
-        df['main_categories'] = df['main_categories'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
+        df['main_categories'] = df['main_categories'].apply(
+            lambda x: ast.literal_eval(x) if isinstance(x, str) else x
+        )
         
-        # Run analyses
+        # Run all exploratory analyses
         analyze_research_growth(df)
         analyze_collaboration(df)
         analyze_interdisciplinarity(df)
         analyze_category_cooccurrence(df)
         analyze_emerging_keywords(df)
         
-        print("\nExploratory analysis complete. Results saved to data/processed/analysis_results.")
+        print("\n✓ Exploratory analysis complete. Results saved to data/processed/analysis_results.")
         print("NOTE: Full analysis requires the complete arXiv dataset and Semantic Scholar citation data.")
         
     except FileNotFoundError as e:

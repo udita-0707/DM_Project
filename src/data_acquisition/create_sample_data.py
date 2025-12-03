@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Sample Data Extraction Script
-Extracts a representative sample from the full arXiv dataset for development and testing.
+Sample Data Extraction Module
+
+Extracts a random sample from the full arXiv dataset for development and testing.
+This is useful for faster iteration during development before processing the full 2.2M+ paper dataset.
 
 Usage:
     python3 create_sample_data.py --size 10000 --output data/raw/arxiv_sample_10k.json
@@ -11,17 +13,23 @@ import json
 import random
 import argparse
 import os
-from datetime import datetime
 
 def extract_sample(input_file, output_file, sample_size=10000, random_seed=42):
     """
     Extract a random sample from the large arXiv JSON file.
     
+    Uses reservoir sampling approach: first counts total lines, then randomly selects
+    indices, and finally extracts those specific lines. This is memory-efficient for
+    large files that don't fit in memory.
+    
     Args:
-        input_file: Path to the full arXiv JSON file
-        output_file: Path to save the sample
-        sample_size: Number of records to extract
-        random_seed: Random seed for reproducibility
+        input_file: Path to the full arXiv JSON file (arxiv-metadata-oai-snapshot.json)
+        output_file: Path to save the sample JSON file
+        sample_size: Number of records to extract (default: 10000)
+        random_seed: Random seed for reproducibility (default: 42)
+    
+    Returns:
+        bool: True if successful, False otherwise
     """
     
     print(f"=" * 60)

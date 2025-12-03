@@ -1,0 +1,73 @@
+{
+  "model_type": "RandomForestRegressor",
+  "train_rmse": 83.59476466035343,
+  "test_rmse": 94.34159676300419,
+  "train_r2": 0.8323071740982494,
+  "test_r2": -0.060977712027627806,
+  "feature_importance": [
+    {
+      "feature": "abstract_length",
+      "importance": 0.2586735613161244
+    },
+    {
+      "feature": "title_length",
+      "importance": 0.18738083839708344
+    },
+    {
+      "feature": "submission_year",
+      "importance": 0.13940134687067682
+    },
+    {
+      "feature": "paper_age",
+      "importance": 0.1183350786814797
+    },
+    {
+      "feature": "num_authors",
+      "importance": 0.10612681401310912
+    },
+    {
+      "feature": "num_categories",
+      "importance": 0.07945013307736266
+    },
+    {
+      "feature": "category_cs",
+      "importance": 0.047451063057493366
+    },
+    {
+      "feature": "category_math",
+      "importance": 0.018512435960134
+    },
+    {
+      "feature": "category_astro-ph",
+      "importance": 0.017754821131281583
+    },
+    {
+      "feature": "category_hep-th",
+      "importance": 0.009405682957119646
+    },
+    {
+      "feature": "category_stat",
+      "importance": 0.004916423282807869
+    },
+    {
+      "feature": "category_cond-mat",
+      "importance": 0.003913584613837791
+    },
+    {
+      "feature": "category_quant-ph",
+      "importance": 0.0030023519749436426
+    },
+    {
+      "feature": "category_physics",
+      "importance": 0.002796992701040973
+    },
+    {
+      "feature": "category_eess",
+      "importance": 0.0015388595976129254
+    },
+    {
+      "feature": "category_hep-ph",
+      "importance": 0.0013400123678922035
+    }
+  ]
+}

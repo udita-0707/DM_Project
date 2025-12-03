@@ -1,37 +1,136 @@
-from flask import Flask, render_template, request, jsonify
+"""
+Flask Application for Results Page
+
+Web application for displaying analysis results with:
+- Interactive word cloud generation from paper titles and abstracts
+- Comprehensive Phase-1, Phase-2, and Phase-3 analysis results
+- Filtering by year range for word cloud generation
+"""
+
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import pandas as pd
 import os
 import sys
-import ast
+import json
 import base64
 from io import BytesIO
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import numpy as np
+from datetime import datetime
 
-# Add project root to path to allow imports
+# Add project root to path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from src.utils.data_loader import load_processed_data
-
 app = Flask(__name__)
 
+# Configure static files for analysis results
+ANALYSIS_RESULTS_DIR = os.path.join(project_root, 'data', 'processed', 'analysis_results')
+
 # Load data once when the app starts
-try:
-    # Load data, using mock=False to use the processed sample
-    df = load_processed_data(mock=False)
-    # Ensure 'main_categories' is a list of strings
-    df['main_categories'] = df['main_categories'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
-    # Combine titles and abstracts for word cloud
-    df['text_content'] = df['title'] + ' ' + df['abstract']
-except FileNotFoundError:
-    df = pd.DataFrame({'title': [], 'abstract': [], 'text_content': []})
-    print("Warning: Could not load data. Dashboard functionality will be limited.")
+# NOTE: Using raw arxiv_sample_10k.json file directly to avoid loading 2.2M dataset
+RAW_SAMPLE_PATH = os.path.join(project_root, 'data', 'raw', 'arxiv_sample_10k.json')
+
+def get_submission_year(versions):
+    """
+    Extract submission year from paper versions data.
+    
+    Args:
+        versions: List of version dictionaries with 'created' timestamps
+    
+    Returns:
+        int: Year of first submission, or None if parsing fails
+    """
+    if versions:
+        # Get the first version's creation date (earliest submission)
+        date_str = versions[0]['created']  # Format: 'Mon, 20 Oct 2008 11:36:39 GMT'
+        try:
+            # Try parsing the full date-time format
+            return datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %Z').year
+        except ValueError:
+            try:
+                # Fallback: parse date without time (in case format differs)
+                date_parts = ' '.join(date_str.split()[:4])
+                return datetime.strptime(date_parts, '%a, %d %b %Y').year
+            except ValueError:
+                return None
+    return None
+
+def load_wordcloud_sample():
+    """
+    Load 10K sample for word cloud directly from raw arxiv_sample_10k.json file.
+    This avoids loading the full 2.2M dataset on every worker startup.
+    """
+    # Load directly from raw JSON file
+    if not os.path.exists(RAW_SAMPLE_PATH):
+        print(f"⚠ Warning: Raw sample file not found at {RAW_SAMPLE_PATH}")
+        print("⚠ Word cloud functionality will be limited.")
+        return pd.DataFrame({'title': [], 'abstract': [], 'text_content': [], 'main_categories': [], 'submission_year': []})
+    
+    print(f"✓ Loading raw 10K sample from: {RAW_SAMPLE_PATH}")
+    
+    try:
+        records = []
+        with open(RAW_SAMPLE_PATH, 'r', encoding='utf-8') as f:
+            for line in f:
+                try:
+                    record = json.loads(line.strip())
+                    # Extract necessary fields
+                    records.append({
+                        'id': record.get('id', ''),
+                        'title': record.get('title', ''),
+                        'abstract': record.get('abstract', ''),
+                        'authors': record.get('authors', ''),
+                        'categories': record.get('categories', ''),
+                        'versions': record.get('versions', [])
+                    })
+                except json.JSONDecodeError:
+                    continue
+        
+        # Convert to DataFrame
+        df = pd.DataFrame(records)
+        
+        # Process categories to get main_categories
+        df['main_categories'] = df['categories'].apply(
+            lambda x: [c.split('.')[0] for c in x.split(' ')] if isinstance(x, str) else []
+        )
+        
+        # Extract submission year from versions
+        df['submission_year'] = df['versions'].apply(get_submission_year)
+        
+        # Create text_content for word cloud
+        df['text_content'] = df['title'].fillna('') + ' ' + df['abstract'].fillna('')
+        
+        print(f"✓ Loaded {len(df):,} papers for word cloud")
+        return df
+        
+    except Exception as e:
+        print(f"⚠ Error loading raw sample file: {e}")
+        import traceback
+        traceback.print_exc()
+        return pd.DataFrame({'title': [], 'abstract': [], 'text_content': [], 'main_categories': [], 'submission_year': []})
+
+# Note: Data is now loaded on-demand in the wordcloud_endpoint() function
+# to avoid loading it continuously when the app starts
 
 def generate_word_cloud(text, filtered_df=None):
-    """Generates an enhanced word cloud image from text and returns it as a base64 string."""
+    """
+    Generate word cloud visualization from text with statistics.
+    
+    Creates a comprehensive word cloud visualization including:
+    - Main word cloud image
+    - Top 20 keywords bar chart
+    - Statistics panel with paper counts and category info
+    
+    Args:
+        text: Combined text from titles and abstracts
+        filtered_df: Optional DataFrame for statistics calculation
+    
+    Returns:
+        tuple: (base64_encoded_image, word_frequencies_dict)
+    """
     if not text:
         return "", {}
         
@@ -147,13 +246,33 @@ def generate_word_cloud(text, filtered_df=None):
 
 @app.route('/')
 def index():
-    """Main dashboard page."""
-    # In a full dashboard, you would pass summary statistics or initial plots here
-    return render_template('index.html')
+    """
+    Redirect root to results page.
+    
+    Returns:
+        Redirect: Redirects to /results page
+    """
+    from flask import redirect
+    return redirect('/results')
+
 
 @app.route('/wordcloud', methods=['POST'])
 def wordcloud_endpoint():
-    """Enhanced endpoint to generate interactive word cloud with statistics."""
+    """
+    Generate word cloud from filtered papers based on keyword and year range.
+    
+    NOTE: This endpoint loads the raw arxiv_sample_10k.json file on-demand
+    only when the user clicks the "Generate Word Cloud" button, avoiding
+    continuous memory usage when the app is idle.
+    
+    Accepts POST request with:
+    - word: Keyword to search in titles/abstracts
+    - year_min: Minimum submission year (optional)
+    - year_max: Maximum submission year (optional)
+    
+    Returns:
+        JSON: Base64-encoded word cloud image, paper count, statistics, and metadata
+    """
     try:
         w1 = request.form.get('word', '').strip().lower()
         year_min = request.form.get('year_min', '').strip()
@@ -161,6 +280,13 @@ def wordcloud_endpoint():
         
         if not w1:
             return jsonify({'error': 'Please enter a keyword.'}), 400
+
+        # Load the dataset on-demand only when user requests word cloud
+        print(f"Loading word cloud data for keyword: {w1}")
+        df = load_wordcloud_sample()
+        
+        if df.empty:
+            return jsonify({'error': 'Word cloud data could not be loaded. Please try again later.'}), 500
 
         # Filter papers where w1 is present in the title or abstract
         # Handle multi-word phrases: if keyword has spaces, search as phrase; otherwise use word boundaries
@@ -236,44 +362,56 @@ def wordcloud_endpoint():
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
-@app.route('/stats', methods=['GET'])
-def get_dashboard_stats():
-    """Get overall dashboard statistics."""
+@app.route('/results')
+def results():
+    """
+    Render comprehensive analysis results page.
+    
+    Returns:
+        HTML: Rendered results.html template with all analysis visualizations
+    """
+    return render_template('results.html')
+
+@app.route('/static/analysis_results/<path:filename>')
+def serve_analysis_image(filename):
+    """
+    Serve analysis result images from the analysis_results directory.
+    
+    Args:
+        filename: Path to the image file relative to analysis_results directory
+    
+    Returns:
+        Image file response
+    """
     try:
-        stats = {
-            'total_papers': len(df),
-            'year_range': {
-                'min': int(df['submission_year'].min()) if 'submission_year' in df.columns else None,
-                'max': int(df['submission_year'].max()) if 'submission_year' in df.columns else None
-            },
-            'top_categories': {},
-            'avg_authors': 0,
-            'total_categories': 0
-        }
+        # Split the filename to get subdirectory and actual filename
+        parts = filename.split('/', 1)
+        if len(parts) == 2:
+            subdir, actual_filename = parts
+            directory = os.path.join(ANALYSIS_RESULTS_DIR, subdir)
+        else:
+            directory = ANALYSIS_RESULTS_DIR
+            actual_filename = filename
         
-        try:
-            df_exploded = df.explode('main_categories')
-            stats['top_categories'] = df_exploded['main_categories'].value_counts().head(10).to_dict()
-            stats['total_categories'] = df_exploded['main_categories'].nunique()
-        except:
-            pass
+        # Verify the file exists
+        file_path = os.path.join(directory, actual_filename)
+        if not os.path.exists(file_path):
+            return f"File not found: {filename}", 404
         
-        try:
-            df['num_authors'] = df['authors'].apply(
-                lambda x: len(ast.literal_eval(x)) if isinstance(x, str) and x.strip().startswith('[') 
-                else len(x.split(',')) if isinstance(x, str) else 0
-            )
-            stats['avg_authors'] = float(df['num_authors'].mean())
-        except:
-            pass
+        # Determine MIME type based on file extension
+        mime_type = 'image/png' if filename.lower().endswith('.png') else 'image/jpeg'
         
-        return jsonify(stats)
+        response = send_from_directory(directory, actual_filename, mimetype=mime_type)
+        response.headers['Cache-Control'] = 'public, max-age=3600'
+        return response
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return f"Error serving image: {str(e)}", 500
+
+# Dashboard stats endpoint removed - no longer needed since index.html was deleted
 
 if __name__ == '__main__':
     # For local development, use a standard port
     # In the sandbox, we will use gunicorn to run the app
-    print("Dashboard application ready. Run with: gunicorn -w 4 -b 0.0.0.0:8080 app:app")
+    print("Results page application ready. Run with: gunicorn -w 4 -b 0.0.0.0:8080 app:app")
     # app.run(debug=True, port=5000)
 

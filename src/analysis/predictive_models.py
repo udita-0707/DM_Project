@@ -25,7 +25,10 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'proces
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def create_citation_proxy(df):
-    """Creates a proxy for citation count."""
+    """
+    Creates a proxy for citation count if real citation data is not available.
+    Also prepares citation_metric column, preferring real citations when available.
+    """
     current_year = 2025
     df['paper_age'] = current_year - df['submission_year']
     
@@ -39,45 +42,86 @@ def create_citation_proxy(df):
         (df['version_count'] / df['version_count'].max()) * 0.4
     ) * 100
     
+    # Use real citation data if available, otherwise use proxy
+    if 'citation_count' in df.columns:
+        df['citation_metric'] = df['citation_count'].fillna(df['citation_proxy'])
+        real_count = df['citation_count'].notna().sum()
+        if real_count > 0:
+            print(f"  Using real citation data for {real_count} papers ({100*real_count/len(df):.1f}%)")
+    else:
+        df['citation_metric'] = df['citation_proxy']
+        print(f"  No real citation data found - using citation proxy")
+    
     return df
 
 def prepare_features(df):
-    """Prepare features for predictive modeling."""
-    # Ensure main_categories is a list
+    """
+    FEATURE ENGINEERING: Transform raw data into numerical features for ML models.
+    
+    Why: Machine learning models need numerical features. Raw data has text, lists, dates
+    that need to be converted to numbers.
+    
+    How: 
+    1. Parse list fields (categories, authors) from strings
+    2. Create derived numerical features (counts, lengths)
+    3. One-hot encode categorical variables (top categories)
+    4. Remove rows with missing critical features
+    
+    Args:
+        df: DataFrame with raw paper data
+    
+    Returns:
+        X: Feature matrix (numerical features)
+        y: Target variable (citation_metric)
+        feature_cols: List of feature column names
+        top_categories: List of top 10 categories used for encoding
+    """
+    # PREPROCESSING: Ensure main_categories is a list (not a string)
+    # Why: Categories are stored as string representations of lists, need to parse
     df['main_categories'] = df['main_categories'].apply(
         lambda x: ast.literal_eval(x) if isinstance(x, str) else x
     )
     
-    # Create derived features
+    # FEATURE ENGINEERING: Create derived numerical features
+    # Why: ML models need numerical inputs. We extract counts and lengths.
+    
+    # Count number of authors (collaboration indicator)
     df['num_authors'] = df['authors'].apply(
         lambda x: len(ast.literal_eval(x)) if isinstance(x, str) and x.strip().startswith('[') 
         else len(x.split(',')) if isinstance(x, str) else 0
     )
+    
+    # Count number of disciplines (interdisciplinarity measure)
     df['discipline_count'] = df['main_categories'].apply(len)
+    
+    # Calculate text lengths (longer abstracts may indicate more detailed research)
     df['title_length'] = df['title'].str.len()
     df['abstract_length'] = df['abstract'].str.len()
     
-    # Create citation proxy
+    # Create citation proxy (if real citations not available)
     df = create_citation_proxy(df)
     
-    # One-hot encode top categories
+    # FEATURE ENGINEERING: One-hot encode top categories
+    # Why: Categories are categorical. One-hot encoding converts them to binary features.
+    # How: Create binary columns (category_cs=1 if paper has cs category, else 0)
     df_exploded = df.explode('main_categories')
     top_categories = df_exploded['main_categories'].value_counts().head(10).index.tolist()
     
     for cat in top_categories:
         df[f'category_{cat}'] = df['main_categories'].apply(lambda x: 1 if cat in x else 0)
     
-    # Select features
+    # Select final feature columns for model
     feature_cols = [
         'submission_year', 'num_authors', 'discipline_count', 
         'title_length', 'abstract_length', 'paper_age', 'version_count'
     ] + [f'category_{cat}' for cat in top_categories]
     
-    # Remove rows with missing values in key features
-    df_clean = df[feature_cols + ['citation_proxy']].dropna()
+    # PREPROCESSING: Remove rows with missing values in key features
+    # Why: ML models cannot handle missing values. We drop incomplete records.
+    df_clean = df[feature_cols + ['citation_metric']].dropna()
     
     X = df_clean[feature_cols]
-    y = df_clean['citation_proxy']
+    y = df_clean['citation_metric']
     
     return X, y, feature_cols, top_categories
 
@@ -97,7 +141,7 @@ def train_citation_prediction_model():
     
     print(f"  • Total samples: {len(X):,}")
     print(f"  • Features: {len(feature_cols)}")
-    print(f"  • Target variable: citation_proxy")
+    print(f"  • Target variable: citations (real data when available, proxy otherwise)")
     
     # Split data (temporal split - older papers for training)
     df_temp = df[df['submission_year'].notna()].copy()
