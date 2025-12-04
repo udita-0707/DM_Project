@@ -248,23 +248,25 @@ class SemanticScholarAPI:
             if batch_response:
                 if isinstance(batch_response, list):
                     # API returns papers as a list in the same order as requested IDs
-                for i, paper_data in enumerate(batch_response):
-                    if i < len(batch_ids):
-                        arxiv_id = batch_ids[i]  # Papers are returned in request order
-                        
-                        if paper_data and isinstance(paper_data, dict):
-                            results[arxiv_id] = paper_data
-                            self.cache[f"ARXIV:{arxiv_id}"] = paper_data
-                        else:
-                            # Paper not found or invalid response
+                    for i, paper_data in enumerate(batch_response):
+                        if i < len(batch_ids):
+                            arxiv_id = batch_ids[i]  # Papers are returned in request order
+                            if paper_data and isinstance(paper_data, dict):
+                                results[arxiv_id] = paper_data
+                                self.cache[f"ARXIV:{arxiv_id}"] = paper_data
+                            else:
+                                # Paper not found or invalid response
+                                results[arxiv_id] = None
+                                self.cache[f"ARXIV:{arxiv_id}"] = None
+                    
+                    # Mark any missing papers as None (in case response is shorter)
+                    for arxiv_id in batch_ids:
+                        if arxiv_id not in results:
                             results[arxiv_id] = None
                             self.cache[f"ARXIV:{arxiv_id}"] = None
-                
-                # Mark any missing papers as None (in case response is shorter)
-                for arxiv_id in batch_ids:
-                    if arxiv_id not in results:
-                            results[arxiv_id] = None
-                            self.cache[f"ARXIV:{arxiv_id}"] = None
+                        results[arxiv_id] = None
+                        self.cache[f"ARXIV:{arxiv_id}"] = None
+
                 elif isinstance(batch_response, dict):
                     # API returns papers as a dictionary with IDs as keys
                     for arxiv_id in batch_ids:
